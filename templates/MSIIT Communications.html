@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat/Email Viewer</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f1f1f1;
+            color: #333;
+        }
+        header {
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            text-align: left;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        header h1 {
+            display: flex;
+            align-items: center;
+        }
+        header blockquote {
+            font-size: 0.6em;
+            margin-left: 10px;
+            font-style: italic;
+            border-left: 2px solid #ccc;
+            padding-left: 10px;
+            color: #eee;
+        }
+        main {
+            display: flex;
+            flex: 1;
+            width: 100%;
+        }
+        #message-list {
+            width: 60%;
+            height: calc(15 * 50px); /* Assuming each message is approximately 50px tall */
+            border: 1px solid #ccc;
+            padding: 10px;
+            overflow-y: auto;
+            background-color: #fff;
+        }
+        #message-details {
+            width: 40%;
+            padding: 10px;
+            display: none;
+            flex-direction: column;
+            border: 1px solid #ccc;
+            background-color: #fff;
+        }
+        .message {
+            border-bottom: 1px solid #ccc;
+            padding: 10px;
+            cursor: pointer;
+        }
+        .message:hover {
+            background-color: #f0f0f0;
+        }
+        #response-area {
+            width: 100%;
+            padding: 10px;
+            border-top: 1px solid #ccc;
+            background-color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        #response-area textarea {
+            width: 100%;
+            height: 50px;
+        }
+        #response-area button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        #response-area button:active {
+            transform: scale(0.95);
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #007bff;
+            color: white;
+            width: 100%;
+        }
+        #contact-info {
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            width: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        #contact-info h3 {
+            margin-top: 0;
+        }
+        #contact-info input {
+            width: 100%;
+            margin-bottom: 5px;
+            padding: 5px;
+            border: none;
+            border-radius: 3px;
+        }
+        #contact-info button {
+            margin-top: 10px;
+            padding: 5px 10px;
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div>
+            <h1>MSIIT Communications</h1>
+            <blockquote>Merging chat, text, email, and uploads to a manageable solution.</blockquote>
+        </div>
+        <div id="contact-info">
+            <h3>Contact Information</h3>
+            <input type="text" id="contact-name" placeholder="Name">
+            <input type="text" id="contact-email" placeholder="Email">
+            <input type="text" id="contact-phone" placeholder="Phone">
+            <input type="text" id="contact-msi-clientid" placeholder="MSI ClientID">
+            <button onclick="searchContact()">Search</button>
+        </div>
+    </header>
+    <main>
+        <div id="message-list">
+            <!-- Messages will be populated here by JavaScript -->
+        </div>
+        <div id="message-details">
+            <h2 id="message-type"></h2>
+            <p id="message-contact"></p>
+            <p id="subscriber-info"></p>
+            <p id="initiator-info"></p>
+            <p id="attachments"></p>
+            <p id="message-subject"></p>
+            <p id="message-body"></p>
+        </div>
+    </main>
+    <div id="response-area">
+        <textarea placeholder="Type your response here..."></textarea>
+        <button onclick="reply()">Reply</button>
+    </div>
+    <footer>
+        <p>&copy; 2023 MSIIT Communications</p>
+    </footer>
+    <script>
+        let currentMessageIndex = null;
+        let messages = [];
+
+        function fetchMessages() {
+            fetch('/download_data')
+                .then(response => response.json())
+                .then(data => {
+                    messages = data;
+                    const messageList = document.getElementById('message-list');
+                    messageList.innerHTML = ''; // Clear existing messages
+                    messages.forEach((message, index) => {
+                        if (message.ResponseOrder === 0) {
+                            const messageDiv = document.createElement('div');
+                            messageDiv.className = 'message';
+                            messageDiv.onclick = () => showDetails(index);
+                            messageDiv.innerHTML = `<input type="checkbox" data-id="${index}"> ${Object.keys(message.location).find(key => message.location[key] === "yes").charAt(0).toUpperCase() + Object.keys(message.location).find(key => message.location[key] === "yes").slice(1)}: ${message.subject.body || message.subject["text convo"] || message.subject["upload comment"] || message.subject["chat log"]}`;
+                            messageList.appendChild(messageDiv);
+                        }
+                    });
+                })
+                .catch(error => console.error('Error fetching messages:', error));
+        }
+
+        function showDetails(index) {
+            currentMessageIndex = index;
+            const message = messages[index];
+            const location = Object.keys(message.location).find(key => message.location[key] === "yes");
+            document.getElementById('message-details').style.display = 'flex';
+            document.getElementById('message-type').innerText = location.charAt(0).toUpperCase() + location.slice(1);
+            document.getElementById('message-contact').innerText = `Location: ${location.charAt(0).toUpperCase() + location.slice(1)}, Name: ${message.contact.first_name} ${message.contact.last_name}`;
+            document.getElementById('subscriber-info').innerText = `Subscriber: ${message.Subscriber.Company} (ID: ${message.Subscriber.sub_Id})`;
+            document.getElementById('initiator-info').innerText = `Initiator: ${message.location.initiator}`;
+            document.getElementById('attachments').innerText = 'Attachments: ' + message.Attachment;
+            document.getElementById('message-subject').innerText = 'Subject: ' + (message.subject.body || message.subject["text convo"] || message.subject["upload comment"] || message.subject["chat log"]);
+            document.getElementById('message-body').innerText = 'Body: ' + message.Prompt;
+
+            // Update contact information
+            document.getElementById('contact-name').value = `${message.contact.first_name} ${message.contact.last_name}`;
+            document.getElementById('contact-email').value = message.contact.email;
+            document.getElementById('contact-phone').value = message.contact["phone number"];
+            document.getElementById('contact-msi-clientid').value = message.contact.MSI_ClientID;
+        }
+
+        function reply() {
+            const responseText = document.querySelector('#response-area textarea').value;
+            const checkedMessage = document.querySelector('#message-list input[type="checkbox"]:checked');
+            if (checkedMessage && responseText) {
+                const messageId = checkedMessage.getAttribute('data-id');
+                const messageData = messages[messageId];
+                fetch('/update_response', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ response: responseText, message_data: messageData })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert('Response saved!');
+                        fetchMessages();
+                    }
+                })
+                .catch(error => console.error('Error updating response:', error));
+            }
+        }
+
+        function saveMessages() {
+            fetch('testdata2.json', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(messages)
+            })
+            .then(response => response.json())
+            .then(data => console.log('Success:', data))
+            .catch(error => console.error('Error:', error));
+        }
+
+        function uploadData() {
+            fetch('upload_data.py', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ clients: messages })
+            })
+            .then(response => response.json())
+            .then(data => console.log('Data uploaded to SQL database:', data))
+            .catch(error => console.error('Error uploading data:', error));
+        }
+
+        function searchContact() {
+            const contactName = document.getElementById('contact-name').value;
+            alert(`Searching for contact: ${contactName}`);
+        }
+
+        // Fetch messages initially and then every 10 seconds
+        fetchMessages();
+        setInterval(fetchMessages, 10000);
+    </script>
+</body>
+</html>
