@@ -1,0 +1,26 @@
+- CommunicationsNumber: 0                       primary key unique identifier
+- ResponseOrder: 0                              0 means it needs to be answered, 1 means it is ready to go back to the client, 2 is a close for that prompt
+- location:                                     where the communication is coming from
+    - email: "yes" 
+    - text: ""
+    - upload: ""
+    - chat: ""
+    - initiator: "contact"
+- Subscriber:                                    What company is the communication coming from IE: simpletexting
+    - sub_Id: "001"                              unique identifier for the subscriber
+    - Company: "ABC Corp"                        name of the company
+    - Convo_Id: "N/A"                            conversation identifier MSICLIENTID + Current Date
+- contact:                                       Who is the communication coming from
+    - first_name: "Alex"                         first name of the contact
+    - last_name: "Smith"                         last name of the contact    
+    - email: "alex.smith@example.com"            email of the contact
+    - MSI ClientID: ""                           unique identifier for the contact
+    - phone number: ""                           phone number of the contact
+- subject:                                       subject of the communication This could be the body of a email, text conversation, upload comment, or chat log
+    - body: "Inquiry about recent transaction"
+    - text convo: ""
+    - upload comment: ""
+    - chat log: ""
+- Attachment: "none"                              any attachments that are included in the communication
+- Prompt: "what is said in subject: Dear Alex, we have received your inquiry about the recent transaction. We will get back to you shortly."
+- Response: ""

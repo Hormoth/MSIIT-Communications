@@ -171,19 +171,23 @@
                 .then(response => response.json())
                 .then(data => {
                     messages = data;
-                    const messageList = document.getElementById('message-list');
-                    messageList.innerHTML = ''; // Clear existing messages
-                    messages.forEach((message, index) => {
-                        if (message.ResponseOrder === 0) {
-                            const messageDiv = document.createElement('div');
-                            messageDiv.className = 'message';
-                            messageDiv.onclick = () => showDetails(index);
-                            messageDiv.innerHTML = `<input type="checkbox" data-id="${index}"> ${Object.keys(message.location).find(key => message.location[key] === "yes").charAt(0).toUpperCase() + Object.keys(message.location).find(key => message.location[key] === "yes").slice(1)}: ${message.subject.body || message.subject["text convo"] || message.subject["upload comment"] || message.subject["chat log"]}`;
-                            messageList.appendChild(messageDiv);
-                        }
-                    });
+                    displayMessages();
                 })
                 .catch(error => console.error('Error fetching messages:', error));
+        }
+
+        function displayMessages() {
+            const messageList = document.getElementById('message-list');
+            messageList.innerHTML = ''; // Clear existing messages
+            messages.forEach((message, index) => {
+                if (message.ResponseOrder === 0) {
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = 'message';
+                    messageDiv.onclick = () => showDetails(index);
+                    messageDiv.innerHTML = `<input type="checkbox" data-id="${index}"> ${Object.keys(message.location).find(key => message.location[key] === "yes").charAt(0).toUpperCase() + Object.keys(message.location).find(key => message.location[key] === "yes").slice(1)}: ${message.subject.body || message.subject["text convo"] || message.subject["upload comment"] || message.subject["chat log"]}`;
+                    messageList.appendChild(messageDiv);
+                }
+            });
         }
 
         function showDetails(index) {
