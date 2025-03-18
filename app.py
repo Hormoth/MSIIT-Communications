@@ -89,6 +89,43 @@ def update_response():
     
     return jsonify({'status': 'success'})
 
+@app.route('/contact_search', methods=['POST'])
+def contact_search():
+    search_data = request.json
+    contact_name = search_data.get('contact_name')
+    contact_email = search_data.get('contact_email')
+    contact_phone = search_data.get('contact_phone')
+    contact_msi_clientid = search_data.get('contact_msi_clientid')
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    sql_query = """
+    SELECT first_name, last_name, email, client_id, mobile_phone
+    FROM [MSIOPS].[dbo].[CRIDS_cm_clients]
+    WHERE first_name = ? OR email = ? OR mobile_phone = ? OR client_id = ?
+    """
+    try:
+        cursor.execute(sql_query, (contact_name, contact_email, contact_phone, contact_msi_clientid))
+        contact = cursor.fetchone()
+    except pyodbc.ProgrammingError as e:
+        return jsonify({'error': f"Database error: {e}"}), 500
+    finally:
+        conn.close()
+
+    if contact:
+        contact_info = {
+            'first_name': contact[0],
+            'last_name': contact[1],
+            'email': contact[2],
+            'MSI_ClientID': contact[3],
+            'phone_number': contact[4]
+        }
+        print(contact_info)
+        return jsonify(contact_info)
+    else:
+        return jsonify({'error': 'Contact not found'}), 404
+
 @app.route('/')
 def index():
     return render_template('MSIIT Communications.html')

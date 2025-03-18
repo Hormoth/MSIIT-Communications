@@ -262,7 +262,34 @@
 
         function searchContact() {
             const contactName = document.getElementById('contact-name').value;
-            alert(`Searching for contact: ${contactName}`);
+            const contactEmail = document.getElementById('contact-email').value;
+            const contactPhone = document.getElementById('contact-phone').value;
+            const contactMsiClientId = document.getElementById('contact-msi-clientid').value;
+
+            fetch('/contact_search', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    contact_name: contactName,
+                    contact_email: contactEmail,
+                    contact_phone: contactPhone,
+                    contact_msi_clientid: contactMsiClientId
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    document.getElementById('contact-name').value = data.first_name + ' ' + data.last_name;
+                    document.getElementById('contact-email').value = data.email;
+                    document.getElementById('contact-phone').value = data.phone_number;
+                    document.getElementById('contact-msi-clientid').value = data.MSI_ClientID;
+                }
+            })
+            .catch(error => console.error('Error searching contact:', error));
         }
 
         // Fetch messages initially and then every 10 seconds
