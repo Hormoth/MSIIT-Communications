@@ -116,8 +116,11 @@
             border: none;
             border-radius: 3px;
         }
+        #contact-info .button-container {
+            display: flex;
+            gap: 10px;
+        }
         #contact-info button {
-            margin-top: 10px;
             padding: 5px 10px;
             background-color: #0056b3;
             color: white;
@@ -138,7 +141,11 @@
             <input type="text" id="contact-email" placeholder="Email">
             <input type="text" id="contact-phone" placeholder="Phone">
             <input type="text" id="contact-msi-clientid" placeholder="MSI ClientID">
-            <button onclick="searchContact()">Search</button>
+            <div class="button-container">
+                <button onclick="searchContact()">Search</button>
+                <button onclick="updateContact()">Update</button>
+                <button onclick="createContact()">Create</button>
+            </div>
         </div>
     </header>
     <main>
@@ -290,6 +297,38 @@
                 }
             })
             .catch(error => console.error('Error searching contact:', error));
+        }
+
+        function updateContact() {
+            const contactName = document.getElementById('contact-name').value;
+            const contactEmail = document.getElementById('contact-email').value;
+            const contactPhone = document.getElementById('contact-phone').value;
+            const contactMsiClientId = document.getElementById('contact-msi-clientid').value;
+            const communicationsNumber = messages[currentMessageIndex].CommunicationsNumber;
+
+            fetch('/update_contact', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    contact_name: contactName,
+                    contact_email: contactEmail,
+                    contact_phone: contactPhone,
+                    contact_msi_clientid: contactMsiClientId,
+                    communications_number: communicationsNumber
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    alert('Contact updated successfully!');
+                    fetchMessages();
+                } else {
+                    alert(data.error);
+                }
+            })
+            .catch(error => console.error('Error updating contact:', error));
         }
 
         // Fetch messages initially and then every 10 seconds
