@@ -20,10 +20,10 @@ def Insert_Data(message_data):
     
     for index, row in df.iterrows():
         cursor.execute(
-            "UPDATE [MessageAIML].[dbo].[Communications] SET Response = ?, ResponseOrder = ? WHERE CommunicationsNumber = ?",
+            "UPDATE [MessageAIML].[dbo].[Communications] SET Response = ?, ResponseOrder = ? WHERE Communication_number = ?",
             row['Response'],
             row['ResponseOrder'],
-            row['CommunicationsNumber']
+            row['Communication_number']
         )
     conn.commit()
     

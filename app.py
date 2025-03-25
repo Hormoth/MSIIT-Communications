@@ -133,7 +133,7 @@ def update_contact():
     contact_email = data['contact_email']
     contact_phone = data['contact_phone']
     contact_msi_clientid = data['contact_msi_clientid']
-    communications_number = data['communications_number']
+    communications_number = data['communications_number']  # Correct variable name
 
     conn = get_connection()
     cursor = conn.cursor()
@@ -141,10 +141,17 @@ def update_contact():
     sql_query = """
     UPDATE [MessageAIML].[dbo].[Communications]
     SET contact_first_name = ?, contact_last_name = ?, contact_email = ?, contact_phone_number = ?, contact_MSI_ClientID = ?
-    WHERE CommunicationsNumber = ?
+    WHERE communication_number = ?
     """
     try:
-        cursor.execute(sql_query, (contact_name.split()[0], contact_name.split()[1], contact_email, contact_phone, contact_msi_clientid, communications_number))
+        cursor.execute(sql_query, (
+            contact_name.split()[0],  # First name
+            contact_name.split()[1],  # Last name
+            contact_email,
+            contact_phone,
+            contact_msi_clientid,
+            communications_number  # Correct variable name
+        ))
         conn.commit()
     except pyodbc.ProgrammingError as e:
         return jsonify({'error': f"Database error: {e}"}), 500

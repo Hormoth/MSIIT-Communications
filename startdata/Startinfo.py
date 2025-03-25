@@ -24,7 +24,8 @@ cursor = conn.cursor()
 
 # JSON data
 json_data = json.dumps([
-    {   "CommunicationsNumber": 0,
+    {
+        "Communication_number": "",
         "ResponseOrder": 0,
         "location": {
             "email": "yes",
@@ -56,7 +57,7 @@ json_data = json.dumps([
         "Response": ""
     },
     {
-        "CommunicationsNumber": 1,
+        "Communication_number": "", 
         "ResponseOrder": 0,
         "location": {
             "email": "",
@@ -88,7 +89,7 @@ json_data = json.dumps([
         "Response": ""
     },
     {
-        "CommunicationsNumber": 2,
+        "Communication_number": "",  
         "ResponseOrder": 0,
         "location": {
             "email": "",
@@ -120,7 +121,7 @@ json_data = json.dumps([
         "Response": ""
     },
     {   
-        "CommunicationsNumber": 3,
+        "Communication_number": "",  
         "ResponseOrder": 0,
         "location": {
             "email": "yes",
@@ -152,7 +153,7 @@ json_data = json.dumps([
         "Response": ""
     },
     {
-        "CommunicationsNumber": 4,
+        "Communication_number": "",  
         "ResponseOrder": 0,
         "location": {
             "email": "",
@@ -184,7 +185,7 @@ json_data = json.dumps([
         "Response": ""
     },
     {
-        "CommunicationsNumber": 5,
+        "Communication_number": "", 
         "ResponseOrder": 0,
         "location": {
             "email": "",
@@ -216,7 +217,7 @@ json_data = json.dumps([
         "Response": ""
     },
     {
-        "CommunicationsNumber": 6,
+        "Communication_number": "",  
         "ResponseOrder": 0,
         "location": {
             "email": "",
@@ -248,7 +249,7 @@ json_data = json.dumps([
         "Response": ""
     },
     {
-        "CommunicationsNumber": 7,
+        "Communication_number": "",  
         "ResponseOrder": 0,
         "location": {
             "email": "yes",
@@ -280,7 +281,7 @@ json_data = json.dumps([
         "Response": ""
     },
     {
-        "CommunicationsNumber": 8,
+        "Communication_number": "",  
         "ResponseOrder": 0,
         "location": {
             "email": "yes",
@@ -312,7 +313,7 @@ json_data = json.dumps([
         "Response": ""
     },
     {
-        "CommunicationsNumber": 9,
+        "Communication_number": "", 
         "ResponseOrder": 0,
         "location": {
             "email": "",
@@ -344,7 +345,7 @@ json_data = json.dumps([
         "Response": ""
     },
     {
-        "CommunicationsNumber": 10,
+        "Communication_number": "", 
         "ResponseOrder": 0,
         "location": {
             "email": "",
@@ -376,7 +377,7 @@ json_data = json.dumps([
         "Response": ""
     },
     {
-        "CommunicationsNumber": 11,
+        "Communication_number": "", 
         "ResponseOrder": 0,
         "location": {
             "email": "yes",
@@ -407,7 +408,8 @@ json_data = json.dumps([
         "Prompt": "what is said in subject: Hello Avery, we are here to assist you with your login issues. Please provide more details.",
         "Response": ""
     },
-    {   "CommunicationsNumber": 12,
+    {   
+        "Communication_number": "",  
         "ResponseOrder": 0,
         "location": {
             "email": "",
@@ -439,7 +441,7 @@ json_data = json.dumps([
         "Response": ""
     },
     {
-        "CommunicationsNumber": 13,
+        "Communication_number": "",  
         "ResponseOrder": 0,
         "location": {
             "email": "",
@@ -471,7 +473,7 @@ json_data = json.dumps([
         "Response": ""
     },
     {
-        "CommunicationsNumber": 14,
+        "Communication_number": "", 
         "ResponseOrder": 0,
         "location": {
             "email": "",
@@ -503,7 +505,7 @@ json_data = json.dumps([
         "Response": ""
     },
     {
-        "CommunicationsNumber": 15,
+        "Communication_number": "", 
         "ResponseOrder": 0,
         "location": {
             "email": "yes",
@@ -535,7 +537,7 @@ json_data = json.dumps([
         "Response": ""
     },
     {
-        "CommunicationsNumber": 16,
+        "Communication_number": "",  
         "ResponseOrder": 0,
         "location": {
             "email": "yes",
@@ -567,7 +569,7 @@ json_data = json.dumps([
         "Response": ""
     },
     {
-        "CommunicationsNumber": 17,
+        "Communication_number": "",  
         "ResponseOrder": 0,
         "location": {
             "email": "",
@@ -599,7 +601,7 @@ json_data = json.dumps([
         "Response": ""
     },
     {
-        "CommunicationsNumber": 18,
+        "Communication_number": "",  
         "ResponseOrder": 0,
         "location": {
             "email": "",
@@ -631,7 +633,7 @@ json_data = json.dumps([
         "Response": ""
     },
     {
-        "CommunicationsNumber": 19,
+        "Communication_number": "",  
         "ResponseOrder": 0,
         "location": {
             "email": "yes",
@@ -668,7 +670,7 @@ data = json.loads(json_data)
 
 # Insert data into the database
 for item in data:
-    communications_number = item['CommunicationsNumber']
+   
     response_order = item['ResponseOrder']
     location = item['location']
     subscriber = item['Subscriber']
@@ -680,7 +682,7 @@ for item in data:
 
     cursor.execute('''
         INSERT INTO Communications (
-            CommunicationsNumber,
+          
             ResponseOrder,
             location_email,
             location_text,
@@ -702,9 +704,9 @@ for item in data:
             Attachment,
             Prompt,
             Response
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ''', (
-        communications_number,
+        
         response_order,
         location['email'],
         location['text'],
